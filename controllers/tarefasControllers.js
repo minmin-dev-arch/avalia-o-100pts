@@ -44,12 +44,11 @@ exports.atualizarTarefa = (req,res) => {
 
     if(!status === 'concluida' ) {
         Date.now = function now() {
-          const data_conclusao =  new Date().getTime();
+          const data_conclusao =  new Date().toUTCString();
         };
       }
       
    
-
     const query = 'UPDATE tarefas SET titulo = ?,descricao = ?,status = ?  WHERE id= ?';
     conexao.query(query, [titulo,descricao,id], (err,results) => {
     if(err) return res.status(500).send('Erro ao atualizar');
