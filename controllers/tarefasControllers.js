@@ -36,21 +36,20 @@ exports.listarTarefas= (req,res) => {
 exports.atualizarTarefa = (req,res) => {
     const {id} = req.params;
     const {titulo,descricao,status} = req.body;
-   
+    let data_conclusao =  null
      
     if(!titulo || typeof titulo!= 'string' || titulo.trim() == '') {
         return res.status(400).send('Este campo é obrigatório.');
     }
 
-    if(!status === 'concluida' ) {
-        Date.now = function now() {
-          const data_conclusao =  new Date().toUTCString();
-        };
-      }
-      
+    if (status === 'concluida') {
+      data_conclusao = new Date();
+      const dataBrasilia = new Date(data_conclusao.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
    
-    const query = 'UPDATE tarefas SET titulo = ?,descricao = ?,status = ?  WHERE id= ?';
-    conexao.query(query, [titulo,descricao,id], (err,results) => {
+  }
+  
+    const query = 'UPDATE tarefas SET titulo = ?,descricao = ?,status = ?,data_conclusao = ? WHERE id= ?';
+    conexao.query(query, [titulo,descricao,status,data_conclusao,id], (err,results) => {
     if(err) return res.status(500).send('Erro ao atualizar');
     if(results.affectedRows === 0) return res.status(404).send('Tarefa não encontrada');
     res.send('Tarefa atualizada com sucesso');
@@ -67,3 +66,7 @@ exports.atualizarTarefa = (req,res) => {
         res.status(200).send('Tarefa deletada com sucesso');
          });
         };
+
+
+
+        
